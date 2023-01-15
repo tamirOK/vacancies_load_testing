@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+
+message CreateVacancyRequest {
+  string Title = 1;
+  string Description = 2;
+  Vacancy.DIVISION Division = 3;
+  string Country = 4;
+}
+
+message VacancyRequest { string Id = 1; }
+
+message VacancyResponse { Vacancy vacancy = 1; }
+
+message GetVacanciesRequest {
+  optional int64 page = 1;
+  optional int64 limit = 2;
+}
+
+message Vacancy {
+  enum DIVISION {
+    DEVELOPMENT = 0;
+    SECURITY = 1;
+    SALES = 2;
+    OTHER = 3;
+  }
+
+  string Id = 1;
+  string Title = 2;
+  string Description = 3;
+  int32 Views = 4;
+  DIVISION Division = 5;
+  string Country = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+message UpdateVacancyRequest {
+  string Id = 1;
+  optional string Title = 2;
+  optional string Description = 3;
+  optional int32 Views = 4;
+  optional Vacancy.DIVISION Division = 5;
+  optional string Country = 6;
+}
+
+message DeleteVacancyResponse { bool success = 1; }
+
+
+service VacancyService {
+  rpc CreateVacancy(CreateVacancyRequest) returns (VacancyResponse) {}
+  rpc UpdateVacancy(UpdateVacancyRequest) returns (VacancyResponse) {}
+  rpc GetVacancy(VacancyRequest) returns (VacancyResponse) {}
+  rpc DeleteVacancy(VacancyRequest) returns (DeleteVacancyResponse) {}
+  rpc GetVacancies(GetVacanciesRequest) returns (stream Vacancy) {}
+}
